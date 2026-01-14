@@ -1,0 +1,18 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CHANNEL_ID=${CHANNEL_ID}
+      - GROUP_CHANNEL_ID=${GROUP_CHANNEL_ID}
+    volumes:
+      - ./users.json:/var/www/html/users.json
+      - ./movies.csv:/var/www/html/movies.csv
+      - ./bot_stats.json:/var/www/html/bot_stats.json
+      - ./backups:/var/www/html/backups
+    restart: unless-stopped
