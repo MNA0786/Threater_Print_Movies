@@ -1,7 +1,0 @@
-.git
-.gitignore
-README.md
-render.yaml
-*.bak
-backups/
-.DS_Store
