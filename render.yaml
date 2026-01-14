@@ -1,0 +1,16 @@
+# render.yaml
+services:
+  - type: web
+    name: telegram-movie-bot
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: CHANNEL_ID
+        sync: false
+      - key: GROUP_CHANNEL_ID
+        sync: false
+    healthCheckPath: /?health
+    autoDeploy: true
