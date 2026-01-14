@@ -1,33 +1,21 @@
-# Dockerfile
 FROM php:8.2-apache
 
-# System dependencies install karo
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    zip \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
+# Apache mod rewrite enable
+RUN a2enmod rewrite
 
-# Apache configuration
-RUN a2enmod rewrite headers
-COPY .htaccess /var/www/html/.htaccess
+# PHP extensions
+RUN docker-php-ext-install mysqli
 
-# Working directory
+# Set working directory
 WORKDIR /var/www/html
 
-# Files copy karo
-COPY . .
+# Copy all files
+COPY . /var/www/html/
 
-# File permissions set karo
-RUN chmod 666 users.json && \
-    chmod 666 movies.csv && \
-    chmod 666 bot_stats.json && \
-    chmod 777 backups/ && \
-    chmod 666 error.log
+# Permissions (VERY IMPORTANT)
+RUN chown -R www-data:www-data /var/www/html \
+ && chmod -R 777 /var/www/html/data \
+ && chmod 666 /var/www/html/users.json \
+ && chmod 666 /var/www/html/error.log
 
-# Expose port
 EXPOSE 80
-
-# Start Apache
-CMD ["apache2-foreground"]
