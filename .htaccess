@@ -1,0 +1,14 @@
+# .htaccess
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# Security headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"
+
+# Error handling
+php_flag display_errors off
+php_value error_log error.log
