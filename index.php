@@ -3,6 +3,7 @@
    TELEGRAM MOVIE REQUEST BOT
    PHP + Render.com (Webhook)
    MULTI-QUALITY SUPPORT (CSV)
+   FORCE JOIN REMOVED
    ===================================================== */
 
 ini_set("log_errors", 1);
@@ -10,12 +11,11 @@ ini_set("error_log", __DIR__ . "/error.log");
 
 /* ================= ENV CONFIG ================= */
 
-$BOT_TOKEN = getenv("BOT_TOKEN"); // Render ENV
+$BOT_TOKEN = getenv("BOT_TOKEN");
 $API = "https://api.telegram.org/bot$BOT_TOKEN/";
 
 $REQUEST_GROUP = getenv("REQUEST_GROUP") ?: -1003083386043;
 $MAIN_CHANNEL  = getenv("MAIN_CHANNEL")  ?: -1002831605258;
-$FORCE_CHANNEL = getenv("FORCE_CHANNEL") ?: -1003181705395;
 
 /* ================= STORAGE ================= */
 
@@ -52,15 +52,6 @@ function normalize($text) {
     return strtolower(preg_replace("/[^a-z0-9]/", "", $text));
 }
 
-function forceJoinCheck($user_id) {
-    global $FORCE_CHANNEL;
-    $res = api("getChatMember", [
-        "chat_id" => $FORCE_CHANNEL,
-        "user_id" => $user_id
-    ]);
-    return isset($res["result"]["status"]) && $res["result"]["status"] != "left";
-}
-
 /* ================= MOVIE SEARCH (CSV → MULTI SEND) ================= */
 
 function searchAndSendMovie($movie, $user_id) {
@@ -91,7 +82,7 @@ function searchAndSendMovie($movie, $user_id) {
             ]);
 
             $found = true;
-            usleep(400000); // 0.4 sec delay (anti flood)
+            usleep(400000); // 0.4 sec delay (Telegram anti-flood)
         }
     }
 
@@ -130,16 +121,7 @@ if (isset($update["message"])) {
 • Technical questions  
 • Player commands  
 
-📢 Join: @threater_print_movies"
-        ]);
-        exit;
-    }
-
-    /* ===== FORCE JOIN CHECK ===== */
-    if ($chat_id == $REQUEST_GROUP && !forceJoinCheck($user_id)) {
-        api("sendMessage", [
-            "chat_id" => $chat_id,
-            "text" => "🚫 Pehle channel join karo 👉 @threater_print_movies"
+📢 Channel: @threater_print_movies"
         ]);
         exit;
     }
